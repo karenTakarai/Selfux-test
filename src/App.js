@@ -18,6 +18,7 @@ class App extends Component {
   handleInputChange(event) {
     this.searchfor = this.searchfor + event.target.value;
     this.setState({value: this.searchfor});
+    
   }
 
   handleSubmit(event) {
@@ -30,8 +31,6 @@ class App extends Component {
             alert(err)
         );
         event.preventDefault();
-    }else{
-      alert="escribe algo para comenzar a buscar";
     }
   }
 
