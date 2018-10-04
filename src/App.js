@@ -1,25 +1,64 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import axios from 'axios';
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      input: '',
+      items: [],
+      total: 0,
+    }
+    this.searchfor="";
+    this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleInputChange(event) {
+    this.searchfor = this.searchfor + event.target.value;
+    this.setState({value: this.searchfor});
+  }
+
+  handleSubmit(event) {
+    let url = 'https://api.github.com/search/repositories?q=';
+      if(this.state.value!=undefined){
+        axios.get(url+this.state.value)
+        .then(res =>
+          this.setState({items: res.data.items, total: res.data.total_count})
+        ).catch(err =>
+            alert(err)
+        );
+        event.preventDefault();
+    }else{
+      alert="escribe algo para comenzar a buscar";
+    }
+  }
+
+
   render() {
+    let itemsDOM = this.state.items.map(x =>
+      <li key={x.id}>
+        {x.full_name}
+      </li>
+    );
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+        <div className='form'>
+          <input
+            value={this.state.input}
+            onChange={this.handleInputChange}
+          />
+          <button onClick={this.handleSubmit}>
+            Search
+          </button>
+        </div>
+        <div className='results'>
+          <h5>Total: {this.state.total}</h5>
+          <ul>
+            {itemsDOM}
+          </ul>
+        </div>
       </div>
     );
   }
